@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Berkshire+Swash&family=Gilda+Display&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Gilda Display', serif;
+            transition: background 0.5s;
+        }
+
+        .container {
+            display: flex;
+            align-items: center;
+            width: 90%;
+            max-width: 800px;
+            position: relative;
+            gap: 30px;
+            padding: 20px;
+        }
+
+        .ketupat {
+            width: 400px;
+            height: 400px;
+            background: url('https://i.imgur.com/7FsouRb.png') center/contain no-repeat;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+
+        .ketupat-final {
+            width: 200px;
+            height: 200px;
+            background: url('https://i.imgur.com/7FsouRb.png') center/contain no-repeat;
+            position: relative;
+            opacity: 0;
+            z-index: 5;
+        }
+
+        .lamp {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: url('https://i.imgur.com/0JIa69m.png') center/contain no-repeat;
+            top: -210px;
+            right: -30px;
+            opacity: 0;
+            transition: opacity 0.5s 0.3s;
+            z-index: 5;
+            filter: drop-shadow(0 0 10px rgba(255, 165, 0, 0.7));
+        }
+
+        .message {
+            width: 60%;
+            opacity: 0;
+            transform: translateX(20px);
+            transition: all 0.5s ease 0.2s;
+            text-align: left;
+            margin-left: 40px;
+        }
+
+        .message h1 {
+            font-family: 'Berkshire Swash', cursive;
+            font-size: 2.8rem;
+            color: #03602e;
+            margin: 0 0 15px 0;
+            line-height: 1.1;
+            text-shadow: 0 0 5px rgba(3, 96, 46, 0.2);
+            overflow: hidden;
+            white-space: nowrap;
+            animation: typing 2s steps(10) 0.5s forwards;
+            opacity: 0;
+        }
+
+        .message p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: #333;
+            max-width: 500px;
+            margin: 0;
+            opacity: 0;
+            animation: fadeIn 1s ease 2.5s forwards;
+        }
+
+        .star {
+            position: absolute;
+            background: #f39c12;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0; opacity: 1; }
+            to { width: 100%; opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        @keyframes twinkle {
+            0%, 100% { 
+                transform: scale(0.8); 
+                opacity: 0.3; 
+                background-color: #f1c40f; 
+            }
+            50% { 
+                transform: scale(1.2); 
+                opacity: 1; 
+                background-color: #e67e22; 
+            }
+        }
+
+        body.opened {
+            background: #f9f9f9;
+        }
+
+        body.opened .ketupat {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.8);
+            pointer-events: none;
+        }
+
+        body.opened .ketupat-final {
+            opacity: 1;
+            transition: opacity 0.5s ease 0.3s;
+        }
+
+        body.opened .message {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        body.opened .lamp {
+            opacity: 1;
+        }
+
+        body.opened .star {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="ketupat" id="ketupat"></div>
+        <div class="ketupat-final" id="ketupatFinal"></div>
+        <div class="message">
+            <h1>Eid Mubarak</h1>
+            <p>May this blessed Eid purify our hearts, strengthen our faith, and may Allah grant us the blessing to witness Ramadan once again.</p>
+        </div>
+        <div class="lamp"></div>
+    </div>
+
+    <script>
+        const body = document.body;
+        const ketupat = document.getElementById('ketupat');
+        
+        function createStars() {
+            for (let i = 0; i < 80; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                const size = Math.random() * 3 + 1;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.animationDelay = `${Math.random() * 3}s`;
+                star.style.animationDuration = `${2 + Math.random() * 3}s`;
+                
+                document.body.appendChild(star);
+            }
+        }
+        
+        ketupat.addEventListener('click', () => {
+            body.classList.add('opened');
+            createStars();
+            
+            const title = document.querySelector('.message h1');
+            const desc = document.querySelector('.message p');
+            title.style.animation = 'none';
+            desc.style.animation = 'none';
+            setTimeout(() => {
+                title.style.animation = 'typing 2s steps(10) 0.5s forwards';
+                desc.style.animation = 'fadeIn 1s ease 2.5s forwards';
+            }, 10);
+        });
+        
+        body.addEventListener('click', (e) => {
+            if (e.target === body && body.classList.contains('opened')) {
+                body.classList.remove('opened');
+            }
+        });
+
+        createStars();
+    </script>
+</body>
+</html>
